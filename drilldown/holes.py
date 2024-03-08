@@ -566,7 +566,7 @@ class Surveys:
         mesh = None
         for hole_id in self._holes.keys():
             hole = self._holes[hole_id]
-            depths = hole.desurvey()
+            depths =hole.desurvey(np.arange(0, hole.survey[-1,0], 5))
             from_to = hole._make_from_to(depths)
             if from_to.shape[0] > 0:
                 if mesh is None:
@@ -681,7 +681,7 @@ class DrillHole:
     def desurvey(self, depths=None):
         if depths is None:
             # return desurveyed survey depths if no depths passed
-            return self._hole.desurvey(self.survey[:, 0])
+            return self._hole.desurvey(self.survey[:, 0].astype(np.float64))
         else:
             return self._hole.desurvey(depths)
 
@@ -707,7 +707,7 @@ class DrillHole:
         return mesh
 
     def make_survey_mesh(self):
-        depths = self.desurvey()
+        depths = self.desurvey(np.arange(0, self.survey[-1,0], 5))
         from_to = self._make_from_to(depths)
         mesh = self._make_line_mesh(from_to[0], from_to[1])
 
